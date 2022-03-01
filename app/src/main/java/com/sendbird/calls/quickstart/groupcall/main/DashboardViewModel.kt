@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.sendbird.calls.*
 import com.sendbird.calls.handler.CompletionHandler
 import com.sendbird.calls.handler.RoomHandler
+import com.sendbird.calls.handler.RoomListQueryResultHandler
 import com.sendbird.calls.quickstart.groupcall.util.Resource
 import com.sendbird.calls.quickstart.groupcall.util.Status
 
@@ -17,9 +18,58 @@ class DashboardViewModel : ViewModel() {
     val fetchedRoomId: LiveData<Resource<String>> = _fetchedRoomId
 
     fun createAndEnterRoom() {
+        print("Invoked create and enter room")
         if (_createdRoomId.value?.status == Status.LOADING) {
             return
         }
+
+        // 1. Check if room with participants exists
+        val params2 = RoomListQuery.Params()
+            .setType(RoomType.SMALL_ROOM_FOR_VIDEO)
+            .setLimit(10)
+            .setState(RoomState.OPEN)
+//            .setRangeForCurrentParticipantCount(Range.greaterThanOrEqualTo(1))
+//            .setRangeForCreatedAt(
+//                Range.greaterThanOrEqualTo(aWeekAgo.timeInMillis)
+//            )
+        print(params2)
+
+        val query = SendBirdCall.createRoomListQuery(params2)
+        var isAvailable = true;
+
+        query.next(object : RoomListQueryResultHandler {
+
+            override fun onResult(rooms: List<Room>, e: SendBirdException?) {
+                print("invoked search existing rooms>")
+                print(rooms)
+                if (e != null) {
+                    // Error has occurred.
+                    _createdRoomId.postValue(Resource.error(e.message, e.code, null))
+                    return
+                } else {
+                    // Randomly pick a room
+                    if (rooms.size === 0) {
+                        isAvailable = false
+                        return
+                    }
+                    val room = rooms.random()
+                    room.enter(EnterParams().setAudioEnabled(true).setVideoEnabled(true), object : CompletionHandler {
+                        override fun onResult(e: SendBirdException?) {
+                            if (e != null) {
+                                _createdRoomId.postValue(Resource.error(e.message, e.code, null))
+                            } else {
+                                _createdRoomId.postValue(Resource.success(room.roomId))
+                            }
+                        }
+                    })
+                }
+            }
+        })
+
+        if (isAvailable){
+            return;
+        }
+
 
         _createdRoomId.postValue(Resource.loading(null))
         val params = RoomParams(RoomType.SMALL_ROOM_FOR_VIDEO)

@@ -1,6 +1,6 @@
 package com.sendbird.calls.quickstart.groupcall.util
 
-const val SENDBIRD_APP_ID = "SAMPLE_APP_ID"
+const val SENDBIRD_APP_ID = "0E3906EE-D73D-4339-BDEA-BAF9760A654B"
 
 const val UNKNOWN_SENDBIRD_ERROR = "unknown sendbird error"
 const val EXTRA_ROOM_ID = "com.sendbird.calls.quickstart.ROOM_ID"

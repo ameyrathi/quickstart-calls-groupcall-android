@@ -7,7 +7,6 @@ plugins {
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.1"
 
     defaultConfig {
         applicationId "com.sendbird.calls.quickstart.groupcall"
@@ -47,7 +46,7 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     // Sendbird Calls
-    implementation 'com.sendbird.sdk:sendbird-calls:1.6.0'
+    implementation 'com.sendbird.sdk:sendbird-calls:1.8.0'
 
     // Glide
     implementation 'com.github.bumptech.glide:glide:4.12.0'

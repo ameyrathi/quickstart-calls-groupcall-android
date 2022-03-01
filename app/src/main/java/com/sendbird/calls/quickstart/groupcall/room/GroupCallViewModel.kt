@@ -115,6 +115,14 @@ class GroupCallViewModel(
             _currentAudioDevice.postValue(currentAudioDevice)
         }
 
+        override fun onCustomItemsDeleted(deletedKeys: List<String>) {
+            TODO("Not yet implemented")
+        }
+
+        override fun onCustomItemsUpdated(updatedKeys: List<String>) {
+            TODO("Not yet implemented")
+        }
+
         override fun onError(e: SendBirdException, participant: Participant?) {
             Log.d(TAG, "onError() called with: e = $e, participant = $participant")
             if (e.code == SendBirdError.ERR_LOCAL_PARTICIPANT_LOST_CONNECTION) {
